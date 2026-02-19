@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/server.cjs": {
-      "maxDuration": 10
-    }
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",

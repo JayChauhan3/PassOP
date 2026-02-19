@@ -42,7 +42,7 @@ const Manager = () => {
     useEffect(() => {
         // Set initial eye icon
         if (ref.current) {
-            ref.current.src = "/icons/eye.png?v=2"
+            ref.current.src = "/icons/eye.png"
         }
     }, [])
 
@@ -64,10 +64,10 @@ const Manager = () => {
     const showPassword = () => {
         if (passwordRef.current.type === "password") {
             passwordRef.current.type = "text"
-            ref.current.src = "/icons/open-eye.png?v=2"
+            ref.current.src = "/icons/open-eye.png"
         } else {
             passwordRef.current.type = "password"
-            ref.current.src = "/icons/eye.png?v=2"
+            ref.current.src = "/icons/eye.png"
         }
     }
 

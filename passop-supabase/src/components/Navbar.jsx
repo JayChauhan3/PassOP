@@ -23,7 +23,7 @@ const Navbar = () => {
                     </li>
                 </ul> */}
                     <button className='text-white bg-green-700 my-5 mx-2 rounded-full flex  justify-between items-center ring-white ring-1'>
-                            <img src="/github/logo.png?v=2" alt="GitHub Logo" width="35" height="35" className='pl-1 pb-1 pt-1'/>       
+                            <img src="/github/logo.png" alt="GitHub Logo" width="35" height="35" className='pl-1 pb-1 pt-1'/>       
                         <span className='font-bold px-2'>GitHub</span>
 
                     </button>

@@ -9,6 +9,14 @@ dotenv.config()
 // Connecting to Supabase
 const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_ANON_KEY
+
+console.log('Supabase URL:', supabaseUrl ? 'Set' : 'NOT SET')
+console.log('Supabase Key:', supabaseKey ? 'Set' : 'NOT SET')
+
+if (!supabaseUrl || !supabaseKey) {
+    console.error('Missing Supabase environment variables!')
+}
+
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 // App & Database
@@ -35,14 +43,19 @@ app.get('/', async (req, res) => {
 
 // Save a password
 app.post('/', async (req, res) => { 
+    console.log('POST request received:', req.body)
     const password = req.body
     const { data, error } = await supabase
         .from('passwords')
         .insert([password])
     
+    console.log('Supabase insert result:', { data, error })
+    
     if (error) {
+        console.error('Supabase error:', error)
         res.status(500).json({ error: error.message })
     } else {
+        console.log('Password saved successfully:', data)
         res.send({success: true, result: data})
     }
 })

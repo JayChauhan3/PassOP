@@ -5,10 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { createClient } from '@supabase/supabase-js';
 import 'react-toastify/dist/ReactToastify.css';
 
-// Import icons
-import eyeIcon from '/icons/eye.png'
-import openEyeIcon from '/icons/open-eye.png'
-
 // Initialize Supabase client once (outside component)
 const supabase = createClient(
     import.meta.env.VITE_SUPABASE_URL,
@@ -46,7 +42,7 @@ const Manager = () => {
     useEffect(() => {
         // Set initial eye icon
         if (ref.current) {
-            ref.current.src = eyeIcon
+            ref.current.src = new Image("/icons/eye.png").src
         }
     }, [])
 
@@ -68,10 +64,10 @@ const Manager = () => {
     const showPassword = () => {
         if (passwordRef.current.type === "password") {
             passwordRef.current.type = "text"
-            ref.current.src = openEyeIcon
+            ref.current.src = new Image("/icons/open-eye.png").src
         } else {
             passwordRef.current.type = "password"
-            ref.current.src = eyeIcon
+            ref.current.src = new Image("/icons/eye.png").src
         }
     }
 
@@ -208,7 +204,7 @@ const Manager = () => {
                         <div className="relative">
                             <input ref={passwordRef} value={form.password} onChange={handleChange} placeholder='Enter Password' className='rounded-full border border-green-500 w-full p-4 py-1' type="password" name="password" id="password" />
                             <span className='absolute right-[3px] top-[4px] cursor-pointer' onClick={showPassword}>
-                                <img ref={ref} className='p-1' width={26} src={eyeIcon} alt="eye" />
+                                <img ref={ref} className='p-1' width={26} src="/icons/eye.png" alt="eye" />
                             </span>
                             {fieldError && <p className="text-red-500 text-sm mt-1">{fieldError}</p>}
                         </div>

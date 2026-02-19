@@ -190,14 +190,14 @@ const Manager = () => {
 
                 <div className="flex flex-col p-4 text-black gap-8 items-center">
                     <input value={form.site} onChange={handleChange} placeholder='Enter website URL' className='rounded-full border border-green-500 w-full p-4 py-1' type="text" name="site" id="site" />
-                    <div className="flex flex-col md:flex-row w-full justify-between gap-8">
+                    <div className="flex flex-col md:flex-row w-full justify-between gap-8 items-start">
                         <input value={form.username} onChange={handleChange} placeholder='Enter Username' className='rounded-full border border-green-500 w-full p-4 py-1' type="text" name="username" id="username" />
-                        <div className="relative h-16">
+                        <div className="relative">
                             <input ref={passwordRef} value={form.password} onChange={handleChange} placeholder='Enter Password' className='rounded-full border border-green-500 w-full p-4 py-1' type="password" name="password" id="password" />
                             <span className='absolute right-[3px] top-[4px] cursor-pointer' onClick={showPassword}>
                                 <img ref={ref} className='p-1' width={26} src="icons/eye.png" alt="eye" />
                             </span>
-                            {fieldError && <p className="text-red-500 text-sm absolute top-10 left-0">{fieldError}</p>}
+                            {fieldError && <p className="text-red-500 text-sm mt-1">{fieldError}</p>}
                         </div>
 
                     </div>

@@ -66,18 +66,25 @@ const Manager = () => {
     }
 
     const savePassword = async () => {
+        console.log('🔘 Save button clicked!')
+        console.log('🔍 Current form data:', form)
+        
         if (form.site.length > 3 && form.username.length > 3 && form.password.length > 3) {
-            console.log('🔍 Saving password:', form)
+            console.log('🔍 Validation passed - proceeding with save...')
             let result;
             
             if (form.id) {
                 // Update existing password
                 console.log('📝 Updating existing password with ID:', form.id)
+                console.log('🔍 Update payload:', { site: form.site, username: form.username, password: form.password })
+                
                 const { data, error } = await supabase
                     .from('passwords')
                     .update({ site: form.site, username: form.username, password: form.password })
                     .eq('id', form.id)
+                    .select() // Add .select() to return updated data
                 
+                console.log('🔍 Supabase update response:', { data, error })
                 result = { data, error }
             } else {
                 // Insert new password
@@ -86,6 +93,7 @@ const Manager = () => {
                     .from('passwords')
                     .insert([form])
                 
+                console.log('🔍 Supabase insert response:', { data, error })
                 result = { data, error }
             }
             
@@ -95,7 +103,7 @@ const Manager = () => {
                 return
             }
             
-            console.log('✅ Password saved successfully:', result.data)
+            console.log('✅ Password saved successfully, Supabase response:', result.data)
             setform({ site: "", username: "", password: "" })
             const updatedPasswords = await getPasswords()
             console.log('🔄 Updated passwords array:', updatedPasswords)
@@ -111,6 +119,7 @@ const Manager = () => {
                 theme: "dark",
             });
         } else {
+            console.log('❌ Validation failed - form data:', form)
             toast('Error: Password not saved!');
         }
     }

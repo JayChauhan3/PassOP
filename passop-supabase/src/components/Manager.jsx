@@ -2,6 +2,7 @@ import React from 'react'
 import { useRef, useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
+import { createClient } from '@supabase/supabase-js';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Manager = () => {
@@ -10,16 +11,26 @@ const Manager = () => {
     const [form, setform] = useState({ site: "", username: "", password: "" })
     const [passwordArray, setPasswordArray] = useState([])
 
+    // Initialize Supabase client
+    const supabase = createClient(
+        import.meta.env.VITE_SUPABASE_URL,
+        import.meta.env.VITE_SUPABASE_ANON_KEY
+    )
+
     const getPasswords = async () => {
-        const apiUrl = import.meta.env.VITE_API_URL || ''
-        let req = await fetch(`${apiUrl}/api/`)
-        let passwords = await req.json()
-        setPasswordArray(passwords)
+        const { data, error } = await supabase
+            .from('passwords')
+            .select('*')
+        if (error) {
+            console.error('Error fetching passwords:', error)
+            return []
+        }
+        return data
     }
 
 
     useEffect(() => {
-        getPasswords()
+        getPasswords().then(data => setPasswordArray(data))
     }, [])
 
 
@@ -53,61 +64,50 @@ const Manager = () => {
 
     const savePassword = async () => {
         if (form.site.length > 3 && form.username.length > 3 && form.password.length > 3) {
-
-            // If any such id exists in the db, delete it 
-            if (form.id) {
-                const apiUrl = import.meta.env.VITE_API_URL || ''
-                await fetch(`${apiUrl}/api/`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: form.id }) })
+            const { data, error } = await supabase
+                .from('passwords')
+                .insert([form])
+            
+            if (error) {
+                console.error('Error saving password:', error)
+                toast('Error: Password not saved!')
+                return
             }
-
-            const newPassword = { site: form.site, username: form.username, password: form.password }
-            const apiUrl = import.meta.env.VITE_API_URL || ''
-            console.log('Sending POST request to:', `${apiUrl}/api/`)
-            console.log('Request body:', newPassword)
             
-            const response = await fetch(`${apiUrl}/api/`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newPassword) })
-            
-            console.log('Response status:', response.status)
-            console.log('Response ok:', response.ok)
-            
-            if (response.ok) {
-                const result = await response.json()
-                console.log('Password saved successfully:', result)
-                // Otherwise clear the form and show toast
-                setform({ site: "", username: "", password: "" })
-                await getPasswords() // Refresh data from Supabase
-                toast('Password saved!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
-            } else {
-                const errorText = await response.text()
-                console.error('Failed to save password:', response.status, errorText)
-                toast('Error: Password not saved!');
-            }
-        }
-        else {
+            console.log('Password saved successfully:', data)
+            setform({ site: "", username: "", password: "" })
+            await getPasswords()
+            toast('Password saved!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        } else {
             toast('Error: Password not saved!');
         }
-
     }
 
     const deletePassword = async (id) => {
         console.log("Deleting password with id ", id)
         let c = confirm("Do you really want to delete this password?")
         if (c) {
-            setPasswordArray(passwordArray.filter(item => item.id !== id))
+            const { error } = await supabase
+                .from('passwords')
+                .delete()
+                .eq('id', id)
             
-            const apiUrl = import.meta.env.VITE_API_URL || ''
-            await fetch(`${apiUrl}/api/`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) })
-            await getPasswords() // Refresh data from Supabase
-
+            if (error) {
+                console.error('Error deleting password:', error)
+                toast('Error: Password not deleted!')
+                return
+            }
+            
+            await getPasswords()
             toast('Password Deleted!', {
                 position: "top-right",
                 autoClose: 5000,
@@ -118,7 +118,6 @@ const Manager = () => {
                 theme: "dark",
             });
         }
-
     }
 
     const editPassword = (id) => {

@@ -44,6 +44,11 @@ app.get('/', async (req, res) => {
 // Save a password
 app.post('/', async (req, res) => { 
     console.log('POST request received:', req.body)
+    console.log('Environment check:', {
+        'SUPABASE_URL': process.env.SUPABASE_URL ? 'SET' : 'NOT SET',
+        'SUPABASE_ANON_KEY': process.env.SUPABASE_ANON_KEY ? 'SET' : 'NOT SET'
+    })
+    
     const password = req.body
     const { data, error } = await supabase
         .from('passwords')
@@ -52,8 +57,8 @@ app.post('/', async (req, res) => {
     console.log('Supabase insert result:', { data, error })
     
     if (error) {
-        console.error('Supabase error:', error)
-        res.status(500).json({ error: error.message })
+        console.error('Supabase error details:', JSON.stringify(error, null, 2))
+        res.status(500).json({ error: error.message, details: error })
     } else {
         console.log('Password saved successfully:', data)
         res.send({success: true, result: data})

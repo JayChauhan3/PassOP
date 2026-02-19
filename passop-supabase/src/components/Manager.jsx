@@ -16,6 +16,7 @@ const Manager = () => {
     const passwordRef = useRef()
     const [form, setform] = useState({ site: "", username: "", password: "" })
     const [passwordArray, setPasswordArray] = useState([])
+    const [fieldError, setFieldError] = useState("")
 
     const getPasswords = async () => {
         console.log('🔍 Fetching passwords from Supabase...')
@@ -120,7 +121,13 @@ const Manager = () => {
             });
         } else {
             console.log('❌ Validation failed - form data:', form)
-            toast('Error: Password not saved!');
+            if (form.password.length <= 3) {
+                setFieldError("Password should be more than 3 characters")
+            } else if (form.site.length <= 3 || form.username.length <= 3) {
+                toast('Warning: Fields should be more than 3 characters for better security!');
+            } else {
+                toast('Error: Please fill in all fields!');
+            }
         }
     }
 
@@ -186,6 +193,7 @@ const Manager = () => {
                             <span className='absolute right-[3px] top-[4px] cursor-pointer' onClick={showPassword}>
                                 <img ref={ref} className='p-1' width={26} src="icons/eye.png" alt="eye" />
                             </span>
+                            {fieldError && <p className="text-red-500 text-sm mt-1">{fieldError}</p>}
                         </div>
 
                     </div>

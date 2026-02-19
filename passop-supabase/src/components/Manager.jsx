@@ -17,6 +17,8 @@ const Manager = () => {
     const [form, setform] = useState({ site: "", username: "", password: "" })
     const [passwordArray, setPasswordArray] = useState([])
     const [fieldError, setFieldError] = useState("")
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [deleteId, setDeleteId] = useState("")
 
     const getPasswords = async () => {
         console.log('🔍 Fetching passwords from Supabase...')
@@ -136,31 +138,35 @@ const Manager = () => {
 
     const deletePassword = async (id) => {
         console.log("Deleting password with id ", id)
-        let c = confirm("Do you really want to delete this password?")
-        if (c) {
-            const { error } = await supabase
-                .from('passwords')
-                .delete()
-                .eq('id', id)
-            
-            if (error) {
-                console.error('Error deleting password:', error)
-                toast('Error: Password not deleted!')
-                return
-            }
-            
-            const updatedPasswords = await getPasswords()
-            setPasswordArray([...updatedPasswords]) // Force re-render with new array reference
-            toast('Password Deleted!', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true, 
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-            });
+        setDeleteId(id)
+        setShowDeleteModal(true)
+    }
+
+    const confirmDelete = async () => {
+        const { error } = await supabase
+            .from('passwords')
+            .delete()
+            .eq('id', deleteId)
+        
+        if (error) {
+            console.error('Error deleting password:', error)
+            toast('Error: Password not deleted!')
+            return
         }
+        
+        const updatedPasswords = await getPasswords()
+        setPasswordArray([...updatedPasswords]) // Force re-render with new array reference
+        toast('Password Deleted!', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true, 
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
+        setShowDeleteModal(false)
+        setDeleteId("")
     }
 
     const editPassword = (id) => {
@@ -282,6 +288,30 @@ const Manager = () => {
                     </table>}
                 </div>
             </div>
+
+            {/* Custom Delete Modal */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4 border-2 border-green-500">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Confirm Delete</h3>
+                        <p className="text-gray-600 mb-6">Are you sure you want to delete this password? This action cannot be undone.</p>
+                        <div className="flex gap-3 justify-end">
+                            <button 
+                                onClick={() => {setShowDeleteModal(false); setDeleteId("")}}
+                                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                onClick={confirmDelete}
+                                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </>
     )

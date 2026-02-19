@@ -124,8 +124,10 @@ const Manager = () => {
             console.log('❌ Validation failed - form data:', form)
             if (form.password.length <= 3) {
                 setFieldError("Password should be more than 3 characters")
-            } else if (form.site.length <= 3 || form.username.length <= 3) {
-                toast('Warning: Fields should be more than 3 characters for better security!');
+            } else if (form.site.length === 0) {
+                toast('Error: Site URL is required!');
+            } else if (form.username.length === 0) {
+                toast('Error: Username is required!');
             } else {
                 toast('Error: Please fill in all fields!');
             }

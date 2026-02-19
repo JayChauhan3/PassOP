@@ -5,21 +5,17 @@ import { v4 as uuidv4 } from 'uuid';
 import { createClient } from '@supabase/supabase-js';
 import 'react-toastify/dist/ReactToastify.css';
 
+// Initialize Supabase client once (outside component)
+const supabase = createClient(
+    import.meta.env.VITE_SUPABASE_URL,
+    import.meta.env.VITE_SUPABASE_ANON_KEY
+)
+
 const Manager = () => {
     const ref = useRef()
     const passwordRef = useRef()
     const [form, setform] = useState({ site: "", username: "", password: "" })
     const [passwordArray, setPasswordArray] = useState([])
-
-    // Initialize Supabase client
-    console.log('Environment variables check:')
-    console.log('VITE_SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL)
-    console.log('VITE_SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'SET' : 'NOT SET')
-    
-    const supabase = createClient(
-        import.meta.env.VITE_SUPABASE_URL,
-        import.meta.env.VITE_SUPABASE_ANON_KEY
-    )
 
     const getPasswords = async () => {
         const { data, error } = await supabase

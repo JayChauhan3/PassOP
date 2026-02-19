@@ -91,11 +91,8 @@ const Manager = () => {
             
             console.log('Password saved successfully:', result.data)
             setform({ site: "", username: "", password: "" })
-            
-            // Refresh data from Supabase to ensure UI is up-to-date
-            const freshData = await getPasswords()
-            setPasswordArray(freshData)
-            
+            const updatedPasswords = await getPasswords()
+            setPasswordArray(updatedPasswords)
             toast('Password saved!', {
                 position: "top-right",
                 autoClose: 5000,
@@ -126,7 +123,8 @@ const Manager = () => {
                 return
             }
             
-            await getPasswords()
+            const updatedPasswords = await getPasswords()
+            setPasswordArray(updatedPasswords)
             toast('Password Deleted!', {
                 position: "top-right",
                 autoClose: 5000,
@@ -140,10 +138,8 @@ const Manager = () => {
     }
 
     const editPassword = (id) => {
-        const passwordToEdit = passwordArray.find(i => i.id === id)
-        if (passwordToEdit) {
-            setform({ ...passwordToEdit, id: id })
-        }
+        setform({ ...passwordArray.filter(i => i.id === id)[0], id: id })
+        setPasswordArray(passwordArray.filter(item => item.id !== id))
     }
 
 

@@ -72,6 +72,7 @@ const Manager = () => {
         
         if (form.site.length > 3 && form.username.length > 3 && form.password.length > 3) {
             console.log('🔍 Validation passed - proceeding with save...')
+            setFieldError("") // Clear error when validation passes
             let result;
             
             if (form.id) {
@@ -189,12 +190,12 @@ const Manager = () => {
                     <input value={form.site} onChange={handleChange} placeholder='Enter website URL' className='rounded-full border border-green-500 w-full p-4 py-1' type="text" name="site" id="site" />
                     <div className="flex flex-col md:flex-row w-full justify-between gap-8">
                         <input value={form.username} onChange={handleChange} placeholder='Enter Username' className='rounded-full border border-green-500 w-full p-4 py-1' type="text" name="username" id="username" />
-                        <div className="relative">
+                        <div className="relative mb-4">
                             <input ref={passwordRef} value={form.password} onChange={handleChange} placeholder='Enter Password' className='rounded-full border border-green-500 w-full p-4 py-1' type="password" name="password" id="password" />
                             <span className='absolute right-[3px] top-[4px] cursor-pointer' onClick={showPassword}>
                                 <img ref={ref} className='p-1' width={26} src="icons/eye.png" alt="eye" />
                             </span>
-                            {fieldError && <p className="text-red-500 text-sm mt-1 absolute -bottom-6 left-0">{fieldError}</p>}
+                            {fieldError && <p className="text-red-500 text-sm mt-2">{fieldError}</p>}
                         </div>
 
                     </div>

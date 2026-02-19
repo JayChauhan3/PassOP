@@ -61,7 +61,6 @@ const Manager = () => {
             }
 
             const newPassword = { site: form.site, username: form.username, password: form.password }
-            setPasswordArray([...passwordArray, newPassword])
             const apiUrl = import.meta.env.VITE_API_URL || ''
             await fetch(`${apiUrl}/api/`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newPassword) })
 

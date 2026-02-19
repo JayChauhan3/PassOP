@@ -168,6 +168,7 @@ const Manager = () => {
 
     const handleChange = (e) => {
         setform({ ...form, [e.target.name]: e.target.value })
+        setFieldError("") // Clear error when user starts typing
     }
 
 
@@ -193,7 +194,7 @@ const Manager = () => {
                             <span className='absolute right-[3px] top-[4px] cursor-pointer' onClick={showPassword}>
                                 <img ref={ref} className='p-1' width={26} src="icons/eye.png" alt="eye" />
                             </span>
-                            {fieldError && <p className="text-red-500 text-sm mt-1">{fieldError}</p>}
+                            {fieldError && <p className="text-red-500 text-sm mt-1 absolute -bottom-6 left-0">{fieldError}</p>}
                         </div>
 
                     </div>

@@ -12,6 +12,10 @@ const Manager = () => {
     const [passwordArray, setPasswordArray] = useState([])
 
     // Initialize Supabase client
+    console.log('Environment variables check:')
+    console.log('VITE_SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL)
+    console.log('VITE_SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'SET' : 'NOT SET')
+    
     const supabase = createClient(
         import.meta.env.VITE_SUPABASE_URL,
         import.meta.env.VITE_SUPABASE_ANON_KEY

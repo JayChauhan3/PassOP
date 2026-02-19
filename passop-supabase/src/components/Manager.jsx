@@ -99,7 +99,7 @@ const Manager = () => {
             setform({ site: "", username: "", password: "" })
             const updatedPasswords = await getPasswords()
             console.log('🔄 Updated passwords array:', updatedPasswords)
-            setPasswordArray(updatedPasswords)
+            setPasswordArray([...updatedPasswords]) // Force re-render with new array reference
             toast('Password saved!', {
                 position: "top-right",
                 autoClose: 5000,
@@ -131,7 +131,7 @@ const Manager = () => {
             }
             
             const updatedPasswords = await getPasswords()
-            setPasswordArray(updatedPasswords)
+            setPasswordArray([...updatedPasswords]) // Force re-render with new array reference
             toast('Password Deleted!', {
                 position: "top-right",
                 autoClose: 5000,

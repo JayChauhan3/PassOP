@@ -11,8 +11,8 @@ const Manager = () => {
     const [passwordArray, setPasswordArray] = useState([])
 
     const getPasswords = async () => {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
-        let req = await fetch(`${apiUrl}/`)
+        const apiUrl = import.meta.env.VITE_API_URL || ''
+        let req = await fetch(`${apiUrl}/api/`)
         let passwords = await req.json()
         setPasswordArray(passwords)
     }
@@ -56,14 +56,14 @@ const Manager = () => {
 
             // If any such id exists in the db, delete it 
             if (form.id) {
-                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
-                await fetch(`${apiUrl}/`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: form.id }) })
+                const apiUrl = import.meta.env.VITE_API_URL || ''
+                await fetch(`${apiUrl}/api/`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: form.id }) })
             }
 
             const newPassword = { site: form.site, username: form.username, password: form.password }
             setPasswordArray([...passwordArray, newPassword])
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
-            await fetch(`${apiUrl}/`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newPassword) })
+            const apiUrl = import.meta.env.VITE_API_URL || ''
+            await fetch(`${apiUrl}/api/`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newPassword) })
 
             // Otherwise clear the form and show toast
             setform({ site: "", username: "", password: "" })
@@ -91,8 +91,8 @@ const Manager = () => {
         if (c) {
             setPasswordArray(passwordArray.filter(item => item.id !== id))
             
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
-            await fetch(`${apiUrl}/`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) })
+            const apiUrl = import.meta.env.VITE_API_URL || ''
+            await fetch(`${apiUrl}/api/`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) })
             await getPasswords() // Refresh data from Supabase
 
             toast('Password Deleted!', {

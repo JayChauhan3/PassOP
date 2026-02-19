@@ -62,21 +62,27 @@ const Manager = () => {
 
             const newPassword = { site: form.site, username: form.username, password: form.password }
             const apiUrl = import.meta.env.VITE_API_URL || ''
-            await fetch(`${apiUrl}/api/`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newPassword) })
-
-            // Otherwise clear the form and show toast
-            setform({ site: "", username: "", password: "" })
-            await getPasswords() // Refresh data from Supabase
-            toast('Password saved!', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-            });
+            const response = await fetch(`${apiUrl}/api/`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newPassword) })
+            
+            if (response.ok) {
+                console.log('Password saved successfully')
+                // Otherwise clear the form and show toast
+                setform({ site: "", username: "", password: "" })
+                await getPasswords() // Refresh data from Supabase
+                toast('Password saved!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            } else {
+                console.error('Failed to save password:', response.status)
+                toast('Error: Password not saved!');
+            }
         }
         else {
             toast('Error: Password not saved!');

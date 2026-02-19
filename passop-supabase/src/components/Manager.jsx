@@ -39,6 +39,13 @@ const Manager = () => {
         getPasswords().then(data => setPasswordArray(data))
     }, [])
 
+    useEffect(() => {
+        // Set initial eye icon
+        if (ref.current) {
+            ref.current.src = "/icons/eye.png"
+        }
+    }, [])
+
 
     const copyText = (text) => {
         toast('Copied to clipboard!', {
@@ -57,10 +64,10 @@ const Manager = () => {
     const showPassword = () => {
         if (passwordRef.current.type === "password") {
             passwordRef.current.type = "text"
-            ref.current.src = "icons/eyecross.png"
+            ref.current.src = "/icons/open-eye.png"
         } else {
             passwordRef.current.type = "password"
-            ref.current.src = "icons/eye.png"
+            ref.current.src = "/icons/eye.png"
         }
     }
 
@@ -197,7 +204,7 @@ const Manager = () => {
                         <div className="relative">
                             <input ref={passwordRef} value={form.password} onChange={handleChange} placeholder='Enter Password' className='rounded-full border border-green-500 w-full p-4 py-1' type="password" name="password" id="password" />
                             <span className='absolute right-[3px] top-[4px] cursor-pointer' onClick={showPassword}>
-                                <img ref={ref} className='p-1' width={26} src="icons/eye.png" alt="eye" />
+                                <img ref={ref} className='p-1' width={26} src="/icons/eye.png" alt="eye" />
                             </span>
                             {fieldError && <p className="text-red-500 text-sm mt-1">{fieldError}</p>}
                         </div>

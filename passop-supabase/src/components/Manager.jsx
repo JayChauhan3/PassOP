@@ -64,17 +64,32 @@ const Manager = () => {
 
     const savePassword = async () => {
         if (form.site.length > 3 && form.username.length > 3 && form.password.length > 3) {
-            const { data, error } = await supabase
-                .from('passwords')
-                .insert([form])
+            let result;
             
-            if (error) {
-                console.error('Error saving password:', error)
+            if (form.id) {
+                // Update existing password
+                const { data, error } = await supabase
+                    .from('passwords')
+                    .update({ site: form.site, username: form.username, password: form.password })
+                    .eq('id', form.id)
+                
+                result = { data, error }
+            } else {
+                // Insert new password
+                const { data, error } = await supabase
+                    .from('passwords')
+                    .insert([form])
+                
+                result = { data, error }
+            }
+            
+            if (result.error) {
+                console.error('Error saving password:', result.error)
                 toast('Error: Password not saved!')
                 return
             }
             
-            console.log('Password saved successfully:', data)
+            console.log('Password saved successfully:', result.data)
             setform({ site: "", username: "", password: "" })
             await getPasswords()
             toast('Password saved!', {

@@ -18,13 +18,16 @@ const Manager = () => {
     const [passwordArray, setPasswordArray] = useState([])
 
     const getPasswords = async () => {
+        console.log('🔍 Fetching passwords from Supabase...')
         const { data, error } = await supabase
             .from('passwords')
             .select('*')
         if (error) {
-            console.error('Error fetching passwords:', error)
+            console.error('❌ Error fetching passwords:', error)
             return []
         }
+        console.log('✅ Fetched passwords:', data)
+        console.log('📊 Data length:', data ? data.length : 0)
         return data
     }
 
@@ -64,10 +67,12 @@ const Manager = () => {
 
     const savePassword = async () => {
         if (form.site.length > 3 && form.username.length > 3 && form.password.length > 3) {
+            console.log('🔍 Saving password:', form)
             let result;
             
             if (form.id) {
                 // Update existing password
+                console.log('📝 Updating existing password with ID:', form.id)
                 const { data, error } = await supabase
                     .from('passwords')
                     .update({ site: form.site, username: form.username, password: form.password })
@@ -76,6 +81,7 @@ const Manager = () => {
                 result = { data, error }
             } else {
                 // Insert new password
+                console.log('➕ Inserting new password')
                 const { data, error } = await supabase
                     .from('passwords')
                     .insert([form])
@@ -84,14 +90,15 @@ const Manager = () => {
             }
             
             if (result.error) {
-                console.error('Error saving password:', result.error)
+                console.error('❌ Error saving password:', result.error)
                 toast('Error: Password not saved!')
                 return
             }
             
-            console.log('Password saved successfully:', result.data)
+            console.log('✅ Password saved successfully:', result.data)
             setform({ site: "", username: "", password: "" })
             const updatedPasswords = await getPasswords()
+            console.log('🔄 Updated passwords array:', updatedPasswords)
             setPasswordArray(updatedPasswords)
             toast('Password saved!', {
                 position: "top-right",

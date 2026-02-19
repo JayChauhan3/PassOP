@@ -60,13 +60,14 @@ const Manager = () => {
                 await fetch(`${apiUrl}/`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: form.id }) })
             }
 
-            const newPassword = { ...form, id: uuidv4() }
+            const newPassword = { site: form.site, username: form.username, password: form.password }
             setPasswordArray([...passwordArray, newPassword])
             const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
             await fetch(`${apiUrl}/`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newPassword) })
 
             // Otherwise clear the form and show toast
             setform({ site: "", username: "", password: "" })
+            await getPasswords() // Refresh data from Supabase
             toast('Password saved!', {
                 position: "top-right",
                 autoClose: 5000,
@@ -92,6 +93,7 @@ const Manager = () => {
             
             const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
             await fetch(`${apiUrl}/`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) })
+            await getPasswords() // Refresh data from Supabase
 
             toast('Password Deleted!', {
                 position: "top-right",

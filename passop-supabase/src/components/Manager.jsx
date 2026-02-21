@@ -21,7 +21,6 @@ const Manager = () => {
     const [deleteId, setDeleteId] = useState("")
 
     const getPasswords = async () => {
-        console.log('🔍 Fetching passwords from Supabase...')
         const { data, error } = await supabase
             .from('passwords')
             .select('*')
@@ -29,8 +28,6 @@ const Manager = () => {
             console.error('❌ Error fetching passwords:', error)
             return []
         }
-        console.log('✅ Fetched passwords:', data)
-        console.log('📊 Data length:', data ? data.length : 0)
         return data
     }
 
@@ -72,48 +69,38 @@ const Manager = () => {
     }
 
     const savePassword = async () => {
-        console.log('🔘 Save button clicked!')
-        console.log('🔍 Current form data:', form)
-        
         if (form.site.length > 3 && form.username.length > 3 && form.password.length > 3) {
-            console.log('🔍 Validation passed - proceeding with save...')
             setFieldError("") // Clear error when validation passes
             let result;
-            
+
             if (form.id) {
                 // Update existing password
-                console.log('📝 Updating existing password with ID:', form.id)
-                console.log('🔍 Update payload:', { site: form.site, username: form.username, password: form.password })
-                
                 const { data, error } = await supabase
                     .from('passwords')
                     .update({ site: form.site, username: form.username, password: form.password })
                     .eq('id', form.id)
                     .select() // Add .select() to return updated data
-                
-                console.log('🔍 Supabase update response:', { data, error })
+
                 result = { data, error }
             } else {
                 // Insert new password
-                console.log('➕ Inserting new password')
+
                 const { data, error } = await supabase
                     .from('passwords')
                     .insert([form])
-                
-                console.log('🔍 Supabase insert response:', { data, error })
+
+
                 result = { data, error }
             }
-            
+
             if (result.error) {
                 console.error('❌ Error saving password:', result.error)
                 toast('Error: Password not saved!')
                 return
             }
-            
-            console.log('✅ Password saved successfully, Supabase response:', result.data)
+
             setform({ site: "", username: "", password: "" })
             const updatedPasswords = await getPasswords()
-            console.log('🔄 Updated passwords array:', updatedPasswords)
             setPasswordArray([...updatedPasswords]) // Force re-render with new array reference
             toast('Password saved!', {
                 position: "top-right",
@@ -126,7 +113,7 @@ const Manager = () => {
                 theme: "dark",
             });
         } else {
-            console.log('❌ Validation failed - form data:', form)
+
             if (form.password.length <= 3) {
                 setFieldError("Password should be more than 3 characters")
             } else if (form.site.length === 0) {
@@ -140,7 +127,6 @@ const Manager = () => {
     }
 
     const deletePassword = async (id) => {
-        console.log("Deleting password with id ", id)
         setDeleteId(id)
         setShowDeleteModal(true)
     }
@@ -150,20 +136,20 @@ const Manager = () => {
             .from('passwords')
             .delete()
             .eq('id', deleteId)
-        
+
         if (error) {
             console.error('Error deleting password:', error)
             toast('Error: Password not deleted!')
             return
         }
-        
+
         const updatedPasswords = await getPasswords()
         setPasswordArray([...updatedPasswords]) // Force re-render with new array reference
         toast('Password Deleted!', {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
-            closeOnClick: true, 
+            closeOnClick: true,
             draggable: true,
             progress: undefined,
             theme: "dark",
@@ -299,13 +285,13 @@ const Manager = () => {
                         <h3 className="text-lg font-semibold text-gray-800 mb-4">Confirm Delete</h3>
                         <p className="text-gray-600 mb-6">Are you sure you want to delete this password?</p>
                         <div className="flex gap-3 justify-end">
-                            <button 
-                                onClick={() => {setShowDeleteModal(false); setDeleteId("")}}
+                            <button
+                                onClick={() => { setShowDeleteModal(false); setDeleteId("") }}
                                 className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
                             >
                                 Cancel
                             </button>
-                            <button 
+                            <button
                                 onClick={confirmDelete}
                                 className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                             >
